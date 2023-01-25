@@ -1,0 +1,45 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: SiglusEngine
+
+on:
+  push:
+    branches: [ "siglus-patch-fix" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+    env:
+      WORKING_PATH: ./SiglusEngine
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+        architecture: x86
+    - name: Install dependencies
+      run: |
+        cd $env:WORKING_PATH
+        python -m pip install --upgrade pip
+        if (Test-Path "./requirements.txt") { pip install -r requirements.txt }
+    - name: Build Executable
+      run: |
+        cd $env:WORKING_PATH
+        pyinstaller --name SiglusTools --windowed --onefile GUI.py
+        cp -v KeyList.txt ./dist
+        cp -v Decryption.dll ./dist
+        cp -v ./*.exe ./dist
+        cp -v Readme.md ./dist
+    - name: Upload build
+      uses: actions/upload-artifact@v3
+      with:
+        name: SiglusTools
+        path: |
+          ${{env.WORKING_PATH}}/dist/*.*
