@@ -53,6 +53,7 @@ class ss:
         for x in range(0,H.count):
             f.write(H.string[x])
         H.headerList[0]=H.unknownOffset-offsetDev
+        H.headerList[2]=0x84                           # Strings table offset
         H.headerList[4]=H.fileSize-offsetDev
         for i in range(6,32,2):
             H.headerList[i]=H.headerList[i]-offsetDev
