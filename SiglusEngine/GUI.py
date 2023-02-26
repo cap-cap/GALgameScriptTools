@@ -364,6 +364,9 @@ class setScenePacker:
         nameC.grid(row=7,padx=2,pady=4,sticky='e')
         entryC=Entry(inputFrame,width=4,textvariable=valueC)
         entryC.grid(row=7,column=1,padx=2,pady=4)
+        
+        buttonB=Checkbutton(inputFrame,text="Double Encryption",command=None,variable=valueB)
+        buttonB.grid(row=8,padx=2,pady=4,sticky='e')
     def run(self):
         cmd=["ScenePacker",getValue(value1),getValue(value2),getValue(value3)]
         try:
@@ -384,6 +387,11 @@ class setScenePacker:
             tempKey=[]
         else:
             tempKey=DECRYPT_KEY
+            
+        if not valueB.get():
+            cmd.append("-d")
+            tempKey=[]
+        
         runPy=threading.Thread(target=running,args=(cmd,tempKey))
         runPy.Daemon=True
         runPy.start()

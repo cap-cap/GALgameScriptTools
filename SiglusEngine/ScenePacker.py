@@ -105,7 +105,8 @@ def main(argv,key):
             print("Key not found!")
     
     if dftKey:
-        print("Use default key.")
+        print("Set encryption to lv1")
+        header.ExtraKeyUse = 0
         #key=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     for n in range(0,header.SceneDataCount):
         fileName=SceneNameString[n].decode("UTF-16")+'.ss'
@@ -144,6 +145,12 @@ def main(argv,key):
         '''
         scene.seek(0)
         output.write(scene.read(header.SceneInfoOffset))
+        if header.ExtraKeyUse == 0:
+            bak_pos = output.tell()
+            output.seek(0x54)
+            output.write(b'\0'*4)
+            output.seek(bak_pos)
+            
         offset=0
         for n in range(0,header.SceneInfoCount):
             output.write(struct.pack('2I',offset,SceneDataLength[n]))
